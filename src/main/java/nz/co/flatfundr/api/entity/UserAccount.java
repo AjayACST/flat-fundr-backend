@@ -2,14 +2,15 @@ package nz.co.flatfundr.api.entity;
 
 import jakarta.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
-@Table(name = "app_user", schema = "auth")
+@Table(name = "users", schema = "auth")
 public class UserAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -18,15 +19,23 @@ public class UserAccount {
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "app_user_roles", joinColumns = @JoinColumn(name = "user_id"), schema = "auth")
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), schema = "auth")
     @Column(name = "role")
     private Set<String> roles;
 
-    public Long getId() {
+    public UserAccount() {}
+
+    public UserAccount(String email, String password, Set<String> roles) {
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
