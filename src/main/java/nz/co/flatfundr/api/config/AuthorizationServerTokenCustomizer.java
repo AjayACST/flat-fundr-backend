@@ -24,7 +24,7 @@ public class AuthorizationServerTokenCustomizer {
                 if (principal != null) {
                     List<String> roles = principal.getAuthorities().stream()
                             .map(GrantedAuthority::getAuthority)
-                            .filter(a -> a!=null && (a.startsWith("ROLE_") ||a.startsWith("ROLE")))
+                            .filter(a -> a != null && a.startsWith("ROLE"))
                             .map(a -> a.replaceFirst("^ROLE_?", ""))
                             .toList();
 
