@@ -17,11 +17,13 @@ public class WebSecurityConfig {
         // use Spring Security's default login page at /login (do not call loginPage())
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/**").permitAll()
                 .anyRequest().permitAll()
             )
-            .formLogin(AbstractAuthenticationFilterConfigurer::permitAll
-            )
+            .oauth2ResourceServer(oauth2 ->
+                oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(new JwtAuthConverter())))
+            .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
             .logout(LogoutConfigurer::permitAll);
         return http.build();
     }
