@@ -16,20 +16,20 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/clients")
-public class ClientController {
+@RequestMapping("/api/admin/clients")
+public class AdminController {
 
     private final JpaRegisteredClientRepository repo;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ClientController(JpaRegisteredClientRepository repo, PasswordEncoder passwordEncoder) {
+    public AdminController(JpaRegisteredClientRepository repo, PasswordEncoder passwordEncoder) {
         this.repo = repo;
         this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
-    public ResponseEntity<?> createClient(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<Map<String,String>> createClient(@RequestBody Map<String, Object> payload) {
         String clientId = (String) payload.getOrDefault("client_id", UUID.randomUUID().toString());
         String clientSecret = (String) payload.getOrDefault("client_secret", UUID.randomUUID().toString());
         String clientName = (String) payload.getOrDefault("client_name", "unnamed");
