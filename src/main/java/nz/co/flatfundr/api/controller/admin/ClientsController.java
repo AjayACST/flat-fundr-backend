@@ -1,5 +1,7 @@
 package nz.co.flatfundr.api.controller.admin;
 
+import jakarta.validation.Valid;
+import nz.co.flatfundr.api.dto.admin.CreateClientRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,15 +42,15 @@ public class ClientsController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String,String>> createClient(@RequestBody Map<String, Object> payload) {
-        String clientId = (String) payload.getOrDefault("client_id", UUID.randomUUID().toString());
-        String clientName = (String) payload.getOrDefault("client_name", "unnamed");
+    public ResponseEntity<Map<String,String>> createClient(@Valid @RequestBody CreateClientRequest payload) {
+
+        String clientId = UUID.randomUUID().toString();
 
         String clientSecret = generateOAuthSecret();
         RegisteredClient.Builder builder = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId(clientId)
                 .clientSecret(passwordEncoder.encode(clientSecret))
-                .clientName(clientName)
+                .clientName(payload.getClient_name())
                 .clientIdIssuedAt(Instant.now())
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofHours(12))
@@ -62,22 +64,11 @@ public class ClientsController {
         builder.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE);
         builder.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN);
 
-        if (payload.containsKey("redirect_uris")) {
-            Object r = payload.get("redirect_uris");
-            if (r instanceof java.util.List) {
-                for (Object uri : (java.util.List<?>) r) builder.redirectUri(uri.toString());
-            }
-        }
-        if (payload.containsKey("scopes")) {
-            Object s = payload.get("scopes");
-            if (s instanceof java.util.List) {
-                for (Object scope : (java.util.List<?>) s) builder.scope(scope.toString());
-            }
-        } else {
-            builder.scope("openid");
-            builder.scope("profile");
-            builder.scope("email");
-        }
+        for (String r : payload.getRedirect_uris()) builder.redirectUri(r);
+
+        builder.scope("openid");
+        builder.scope("profile");
+        builder.scope("email");
 
         builder.clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build());
 
