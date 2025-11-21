@@ -14,17 +14,21 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
+import java.security.KeyStore;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.UUID;
 
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 
 @Configuration
 @EnableWebSecurity
 public class AuthorizationServerConfig {
+
+    private final JwkKeystoreProperties jwkProperties;
+
+    public AuthorizationServerConfig(JwkKeystoreProperties jwkProperties) {
+        this.jwkProperties = jwkProperties;
+    }
 
     @Bean
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -45,14 +49,26 @@ public class AuthorizationServerConfig {
 
     @Bean
     public JWKSource<SecurityContext> jwkSource() throws Exception {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+        keyStore.load(jwkProperties.getKeystoreLocation().getInputStream(),
+                jwkProperties.getKeystorePassword().toCharArray());
+
+        char[] keyPassword = jwkProperties.getKeyPassword().toCharArray();
+        String alias = jwkProperties.getKeyAlias();
+        var key = keyStore.getKey(alias, keyPassword);
+
+        if (!(key instanceof RSAPrivateKey privateKey)) {
+            throw new IllegalStateException("RSA private key not found in keystore alias '" + alias + "'");
+        }
+
+        var certificate = keyStore.getCertificate(alias);
+        if (certificate == null || !(certificate.getPublicKey() instanceof RSAPublicKey publicKey)) {
+            throw new IllegalStateException("RSA public key not found for alias '" + alias + "'");
+        }
+
         RSAKey rsaKey = new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
+                .keyID(alias)
                 .build();
         JWKSet jwkSet = new JWKSet(rsaKey);
         return (jwkSelector, _) -> jwkSelector.select(jwkSet);
