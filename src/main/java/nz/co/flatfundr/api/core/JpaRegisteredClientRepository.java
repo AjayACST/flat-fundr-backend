@@ -2,6 +2,7 @@ package nz.co.flatfundr.api.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
     public JpaRegisteredClientRepository(RegisteredClientEntityRepository repository) {
         this.repository = repository;
         this.objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     @Override
@@ -86,14 +89,18 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
                 // ignore, use defaults
             }
         }
-        if (e.getTokenSettings() != null && !e.getTokenSettings().isBlank()) {
-            try {
-                TokenSettings ts = objectMapper.readValue(e.getTokenSettings(), TokenSettings.class);
-                builder.tokenSettings(ts);
-            } catch (JsonProcessingException ex) {
-                // ignore
-            }
-        }
+        builder.tokenSettings(TokenSettings.builder()
+                .accessTokenTimeToLive(Duration.ofHours(12))
+                .refreshTokenTimeToLive(Duration.ofDays(7))
+                .build());
+//        if (e.getTokenSettings() != null && !e.getTokenSettings().isBlank()) {
+//            try {
+//                TokenSettings ts = objectMapper.readValue(e.getTokenSettings(), TokenSettings.class);
+//                builder.tokenSettings(ts);
+//            } catch (JsonProcessingException _) {
+//
+//            }
+//        }
 
         return builder.build();
     }
@@ -112,9 +119,9 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
         e.setClientAuthMethods(r.getClientAuthenticationMethods().stream().map(ClientAuthenticationMethod::getValue).collect(Collectors.joining(",")));
         try {
             e.setClientSettings(objectMapper.writeValueAsString(r.getClientSettings()));
-            e.setTokenSettings(objectMapper.writeValueAsString(r.getTokenSettings()));
-        } catch (JsonProcessingException ex) {
-            // ignore
+            e.setTokenSettings(objectMapper.writeValueAsString(r.getTokenSettings().getSettings()));
+        } catch (JsonProcessingException _) {
+
         }
         return e;
     }
