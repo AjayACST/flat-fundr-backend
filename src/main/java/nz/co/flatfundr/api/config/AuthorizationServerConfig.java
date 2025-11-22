@@ -50,11 +50,11 @@ public class AuthorizationServerConfig {
     @Bean
     public JWKSource<SecurityContext> jwkSource() throws Exception {
         KeyStore keyStore = KeyStore.getInstance("JKS");
-        keyStore.load(jwkProperties.getKeystoreLocation().getInputStream(),
-                jwkProperties.getKeystorePassword().toCharArray());
+        keyStore.load(jwkProperties.keystoreLocation().getInputStream(),
+                jwkProperties.keystorePassword().toCharArray());
 
-        char[] keyPassword = jwkProperties.getKeyPassword().toCharArray();
-        String alias = jwkProperties.getKeyAlias();
+        char[] keyPassword = jwkProperties.keyPassword().toCharArray();
+        String alias = jwkProperties.keyAlias();
         var key = keyStore.getKey(alias, keyPassword);
 
         if (!(key instanceof RSAPrivateKey privateKey)) {
