@@ -43,14 +43,13 @@ public class ClientsController {
 
     @PostMapping
     public ResponseEntity<Map<String,String>> createClient(@Valid @RequestBody CreateClientRequest payload) {
-
         String clientId = UUID.randomUUID().toString();
 
         String clientSecret = generateOAuthSecret();
         RegisteredClient.Builder builder = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId(clientId)
                 .clientSecret(passwordEncoder.encode(clientSecret))
-                .clientName(payload.getClient_name())
+                .clientName(payload.clientName())
                 .clientIdIssuedAt(Instant.now())
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofHours(12))
@@ -64,7 +63,7 @@ public class ClientsController {
         builder.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE);
         builder.authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN);
 
-        for (String r : payload.getRedirect_uris()) builder.redirectUri(r);
+        for (String r : payload.redirectUris()) builder.redirectUri(r);
 
         builder.scope("openid");
         builder.scope("profile");
