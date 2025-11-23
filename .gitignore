@@ -36,3 +36,8 @@ db-secrets.properties
 jwk-secrets.properties
 
 src/main/resources/keystore/**
+
+login-template/node_modules/**
+login-template/package-lock.json
+
+src/main/resources/static/css/main.css
