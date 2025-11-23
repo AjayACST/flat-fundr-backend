@@ -22,9 +22,9 @@
             <h1 class="text-4xl lg:text-5xl font-bold leading-tight">Stress-free flat management for real people sharing real spaces.</h1>
             <p class="text-white/80 text-lg">FlatFundr keeps everyone aligned on rent, utilities, chores, and grocery runs so your flatmates stay friends and your bills stay paid.</p>
             <div class="flex justify-center lg:justify-start gap-6 text-white/80 text-sm">
-                <div class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" /></svg>Bill splitting</div>
-                <div class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18M5 6h14M5 18h14" /></svg>Shared groceries</div>
-                <div class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>Rent reminders</div>
+                <div class="flex items-center gap-2"><svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" /></svg>Bill splitting</div>
+                <div class="flex items-center gap-2"><svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18M5 6h14M5 18h14" /></svg>Shared groceries</div>
+                <div class="flex items-center gap-2"><svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>Rent reminders</div>
             </div>
         </div>
     </section>
@@ -35,14 +35,20 @@
                 <h2 class="text-3xl font-bold text-brand-ink">Sign in to FlatFundr</h2>
                 <p class="text-brand-ink/60 text-sm">Jump back into bill splits, chores, and shared shopping lists in seconds.</p>
             </div>
+            <div th:if="${param.error}" class="text-red-600 text-sm mb-4">
+                Invalid username or password.
+            </div>
+            <div th:if="${param.logout}" class="text-green-600 text-sm mb-4">
+                You have been logged out successfully.
+            </div>
             <form th:action="@{/login}" method="post" class="space-y-6">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <div class="relative">
-                    <input id="username" name="username" type="text" required autofocus class="peer block w-full px-4 pt-6 pb-2 border border-brand-ink/20 bg-transparent rounded-2xl text-brand-ink placeholder-transparent focus:outline-none focus:ring-2 focus:ring-brand-mint focus:border-brand-mint transition" placeholder="Email or username" />
+                    <input id="username" name="username" type="text" autocomplete="username" required autofocus class="peer block w-full px-4 pt-6 pb-2 border border-brand-ink/20 bg-transparent rounded-2xl text-brand-ink placeholder-transparent focus:outline-none focus:ring-2 focus:ring-brand-mint focus:border-brand-mint transition" placeholder="Email or username" />
                     <label for="username" class="absolute left-4 top-4 text-brand-ink/50 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-brand-ink/40 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-mint">Email or username</label>
                 </div>
                 <div class="relative">
-                    <input id="password" name="password" type="password" required class="peer block w-full px-4 pt-6 pb-2 border border-brand-ink/20 bg-transparent rounded-2xl text-brand-ink placeholder-transparent focus:outline-none focus:ring-2 focus:ring-brand-mint focus:border-brand-mint transition" placeholder="Password" />
+                    <input id="password" name="password" type="password" autocomplete="password" required class="peer block w-full px-4 pt-6 pb-2 border border-brand-ink/20 bg-transparent rounded-2xl text-brand-ink placeholder-transparent focus:outline-none focus:ring-2 focus:ring-brand-mint focus:border-brand-mint transition" placeholder="Password" />
                     <label for="password" class="absolute left-4 top-4 text-brand-ink/50 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-brand-ink/40 peer-focus:top-1 peer-focus:text-xs peer-focus:text-brand-mint">Password</label>
                 </div>
                 <div class="flex items-center justify-between text-sm">
