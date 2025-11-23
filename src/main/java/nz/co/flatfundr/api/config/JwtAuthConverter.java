@@ -25,6 +25,7 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
             for (Object r : (Collection<?>) rolesClaim) {
                 if (r != null) {
                     String role = r.toString();
+                    System.out.println(role);
                     if (!role.startsWith("ROLE_")) role = "ROLE_" + role;
                     authorities.add(new SimpleGrantedAuthority(role));
                 }
