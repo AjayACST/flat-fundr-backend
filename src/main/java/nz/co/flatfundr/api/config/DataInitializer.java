@@ -16,7 +16,7 @@ public class DataInitializer {
     public CommandLineRunner seedUsers(UserAccountRepository userRepo, PasswordEncoder passwordEncoder) {
         return _ -> {
             if (userRepo.findByEmail("admin").isEmpty()) {
-                UserAccount admin = new UserAccount("admin", passwordEncoder.encode("adminpass"), Set.of("ROLE_ADMIN"));
+                UserAccount admin = new UserAccount("ajay@quirky.codes", passwordEncoder.encode("adminpass"), Set.of("ROLE_ADMIN"), "Ajay", "Quirk");
                 userRepo.save(admin);
             }
         };
