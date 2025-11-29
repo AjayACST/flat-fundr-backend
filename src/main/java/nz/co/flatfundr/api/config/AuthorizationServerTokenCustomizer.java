@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 public class AuthorizationServerTokenCustomizer {
@@ -32,7 +33,7 @@ public class AuthorizationServerTokenCustomizer {
                             .map(GrantedAuthority::getAuthority)
                             .filter(a -> a != null && a.startsWith("ROLE"))
                             .map(a -> a.replaceFirst("^ROLE_?", ""))
-                            .toList();
+                            .collect(Collectors.toList());
 
                     if (!roles.isEmpty()) {
                         context.getClaims().claim("roles", roles);

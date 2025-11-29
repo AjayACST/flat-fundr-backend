@@ -15,7 +15,7 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner seedUsers(UserAccountRepository userRepo, PasswordEncoder passwordEncoder) {
         return _ -> {
-            if (userRepo.findByEmail("admin").isEmpty()) {
+            if (userRepo.findByEmail("ajay@quirky.codes").isEmpty()) {
                 UserAccount admin = new UserAccount("ajay@quirky.codes", passwordEncoder.encode("adminpass"), Set.of("ROLE_ADMIN"), "Ajay", "Quirk");
                 userRepo.save(admin);
             }

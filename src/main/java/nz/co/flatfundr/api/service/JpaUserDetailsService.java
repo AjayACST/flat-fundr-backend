@@ -31,7 +31,6 @@ public class JpaUserDetailsService implements UserDetailsService {
         Set<GrantedAuthority> authorities = ua.getRoles().stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
-
         return org.springframework.security.core.userdetails.User
                 .withUsername(ua.getEmail())
                 .password(ua.getPassword())

@@ -5,8 +5,8 @@ import nz.co.flatfundr.api.dto.admin.CreateClientRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.web.bind.annotation.*;
-import nz.co.flatfundr.api.core.JpaRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -24,11 +24,11 @@ import java.util.UUID;
 @RequestMapping("/api/admin/clients")
 public class ClientsController {
 
-    private final JpaRegisteredClientRepository repo;
+    private final RegisteredClientRepository repo;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ClientsController(JpaRegisteredClientRepository repo, PasswordEncoder passwordEncoder) {
+    public ClientsController(RegisteredClientRepository repo, PasswordEncoder passwordEncoder) {
         this.repo = repo;
         this.passwordEncoder = passwordEncoder;
     }
@@ -69,7 +69,7 @@ public class ClientsController {
         builder.scope("profile");
         builder.scope("email");
 
-        builder.clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build());
+        builder.clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build());
 
         RegisteredClient rc = builder.build();
         repo.save(rc);
