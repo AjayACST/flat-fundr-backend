@@ -59,6 +59,15 @@ CREATE TABLE auth.oauth2_authorization_consent (
                                                    PRIMARY KEY (registered_client_id, principal_name)
 );
 
+-- Setup Flat table
+CREATE TABLE flats.flat
+(
+    id        UUID         NOT NULL,
+    flat_name VARCHAR(255) NOT NULL,
+    balance   DECIMAL      NOT NULL,
+    CONSTRAINT pk_flat PRIMARY KEY (id)
+);
+
 CREATE TABLE auth.user_roles
 (
     user_id UUID NOT NULL,
@@ -75,7 +84,10 @@ CREATE TABLE auth.users
     enabled         BOOLEAN      NOT NULL,
     account_expired BOOLEAN      NOT NULL,
     account_locked  BOOLEAN      NOT NULL,
-    CONSTRAINT pk_users PRIMARY KEY (id)
+    first_time_setup BOOLEAN     NOT NULL,
+    linked_flat     UUID         NOT NULL,
+    CONSTRAINT pk_users PRIMARY KEY (id),
+    CONSTRAINT fk_users_flat FOREIGN KEY (linked_flat) REFERENCES flats.flat(id)
 );
 
 ALTER TABLE auth.users

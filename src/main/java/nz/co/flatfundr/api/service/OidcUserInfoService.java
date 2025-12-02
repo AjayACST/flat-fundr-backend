@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -18,14 +19,10 @@ public class OidcUserInfoService {
         this.userAccountRepository = userAccountRepository;
     }
 
-    public OidcUserInfo loadUser(String username) {
-        return new OidcUserInfo(findByEmail(username));
-    }
+    public Map<String, Object> loadUser(String username) {
+        UserAccount ua = userAccountRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
-    public Map<String, Object> findByEmail(String email) throws UsernameNotFoundException {
-        UserAccount ua = userAccountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
-
-        return OidcUserInfo.builder()
+        Map<String, Object> oidcUserInfo = OidcUserInfo.builder()
                 .subject(ua.getId().toString())
                 .name(ua.getFirstName() + " " + ua.getLastName())
                 .givenName(ua.getFirstName())
@@ -33,5 +30,9 @@ public class OidcUserInfoService {
                 .email(ua.getEmail())
                 .build()
                 .getClaims();
+        Map<String, Object> test = new HashMap<>(oidcUserInfo);
+        test.put("first_time_setup", ua.isFirstTimeSetup());
+        test.put("linked_flat", ua.getLinkedFlat().getId().toString());
+        return test;
     }
 }

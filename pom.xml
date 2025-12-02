@@ -86,7 +86,25 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>11.18.0</version>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/flatfundr?currentSchema=auth</url>
+                    <user>flatfundr</user>
+                    <password>Ajay2080</password>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.flywaydb</groupId>
+                        <artifactId>flyway-database-postgresql</artifactId>
+                        <version>11.18.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+        </plugins>
 	</build>
 
 </project>

@@ -27,6 +27,35 @@ public class UserAccount {
     @Column(nullable = false)
     private String lastName;
 
+    @Column(nullable = false)
+    private boolean enabled;
+    @Column(nullable = false)
+    private boolean accountExpired;
+    @Column(nullable = false)
+    private boolean accountLocked;
+    @Column
+    private boolean firstTimeSetup;
+
+    @ManyToOne
+    @JoinColumn(name = "linked_flat", foreignKey = @ForeignKey(name = "fk_flat"))
+    private Flat linkedFlat;
+
+
+    public UserAccount() {}
+
+    public UserAccount(String email, String password, Set<String> roles,  String firstName, String lastName, Flat linkedFlat) {
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.enabled = true;
+        this.accountExpired = false;
+        this.accountLocked = false;
+        this.firstTimeSetup = true;
+        this.linkedFlat = linkedFlat;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -67,27 +96,6 @@ public class UserAccount {
         this.accountLocked = accountLocked;
     }
 
-    @Column(nullable = false)
-    private boolean enabled;
-    @Column(nullable = false)
-    private boolean accountExpired;
-    @Column(nullable = false)
-    private boolean accountLocked;
-
-
-    public UserAccount() {}
-
-    public UserAccount(String email, String password, Set<String> roles,  String firstName, String lastName) {
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.enabled = true;
-        this.accountExpired = false;
-        this.accountLocked = false;
-    }
-
     public UUID getId() {
         return id;
     }
@@ -118,6 +126,22 @@ public class UserAccount {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public boolean isFirstTimeSetup() {
+        return firstTimeSetup;
+    }
+
+    public void setFirstTimeSetup(boolean firstTimeSetup) {
+        this.firstTimeSetup = firstTimeSetup;
+    }
+
+    public Flat getLinkedFlat() {
+        return linkedFlat;
+    }
+
+    public void setLinkedFlat(Flat linkedFlat) {
+        this.linkedFlat = linkedFlat;
     }
 }
 
