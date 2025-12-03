@@ -85,7 +85,7 @@ CREATE TABLE auth.users
     account_expired BOOLEAN      NOT NULL,
     account_locked  BOOLEAN      NOT NULL,
     first_time_setup BOOLEAN     NOT NULL,
-    linked_flat     UUID         NOT NULL,
+    linked_flat     UUID             NULL,
     CONSTRAINT pk_users PRIMARY KEY (id),
     CONSTRAINT fk_users_flat FOREIGN KEY (linked_flat) REFERENCES flats.flat(id)
 );
@@ -95,3 +95,16 @@ ALTER TABLE auth.users
 
 ALTER TABLE auth.user_roles
     ADD CONSTRAINT fk_user_roles_on_user_account FOREIGN KEY (user_id) REFERENCES auth.users (id);
+
+-- Create the join code table
+CREATE TABLE flats.flat_join
+(
+    id          UUID         NOT NULL,
+    user_email  VARCHAR(255),
+    linked_flat UUID,
+    join_code   VARCHAR(255) NOT NULL,
+    CONSTRAINT pk_flat_join PRIMARY KEY (id)
+);
+
+ALTER TABLE flats.flat_join
+    ADD CONSTRAINT FK_FLAT FOREIGN KEY (linked_flat) REFERENCES flats.flat (id);

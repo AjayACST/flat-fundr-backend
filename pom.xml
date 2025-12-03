@@ -91,9 +91,18 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>11.18.0</version>
                 <configuration>
-                    <url>jdbc:postgresql://localhost:5432/flatfundr?currentSchema=auth</url>
+                    <url>jdbc:postgresql://localhost:5432/flatfundr</url>
+                    <schemas>
+                        <schema>auth</schema>
+                        <schema>flats</schema>
+                        <schema>flyway</schema>
+                    </schemas>
+                    <defaultSchema>flyway</defaultSchema>
                     <user>flatfundr</user>
                     <password>Ajay2080</password>
+                    <locations>
+                        <location>filesystem:src/main/resources/db/migration</location>
+                    </locations>
                 </configuration>
                 <dependencies>
                     <dependency>

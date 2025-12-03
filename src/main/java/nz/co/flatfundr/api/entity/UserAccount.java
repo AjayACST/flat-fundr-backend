@@ -1,6 +1,8 @@
 package nz.co.flatfundr.api.entity;
 
 import jakarta.persistence.*;
+
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 

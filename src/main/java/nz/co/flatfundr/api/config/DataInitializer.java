@@ -18,9 +18,7 @@ public class DataInitializer {
     public CommandLineRunner seedUsers(UserAccountRepository userRepo, PasswordEncoder passwordEncoder, FlatRepository flatRepo) {
         return _ -> {
             if (userRepo.findByEmail("ajay@quirky.codes").isEmpty()) {
-                Flat flat = new Flat("Hopper Home - Testing");
-                flatRepo.save(flat);
-                UserAccount admin = new UserAccount("ajay@quirky.codes", passwordEncoder.encode("adminpass"), Set.of("ROLE_ADMIN"), "Ajay", "Quirk", flat);
+                UserAccount admin = new UserAccount("ajay@quirky.codes", passwordEncoder.encode("adminpass"), Set.of("ROLE_ADMIN"), "Ajay", "Quirk", null);
                 userRepo.save(admin);
             }
         };
