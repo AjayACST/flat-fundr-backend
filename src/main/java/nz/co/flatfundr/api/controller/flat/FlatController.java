@@ -56,9 +56,10 @@ public class FlatController {
         if (user.getLinkedFlat() != null) {
             return ResponseEntity.badRequest().body("Your Account is already linked to a flat!");
         }
-        Flat flat = new Flat(payload.flatName());
+        Flat flat = new Flat(payload.flatName(), user);
         flatRepository.save(flat);
         user.setLinkedFlat(flat);
+        user.setFirstTimeSetup(false);
         userAccountRepository.save(user);
         if (payload.flatmateEmailList() != null) {
             for (String e : payload.flatmateEmailList()) {

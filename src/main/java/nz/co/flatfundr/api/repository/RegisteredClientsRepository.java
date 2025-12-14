@@ -28,4 +28,3 @@ public class RegisteredClientsRepository {
         return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
     }
 }
-

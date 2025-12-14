@@ -64,9 +64,15 @@ CREATE TABLE flats.flat
 (
     id        UUID         NOT NULL,
     flat_name VARCHAR(255) NOT NULL,
-    balance   DECIMAL      NOT NULL,
+    owner_id  UUID         NOT NULL,
     CONSTRAINT pk_flat PRIMARY KEY (id)
 );
+
+ALTER TABLE flats.flat
+    ADD CONSTRAINT uc_flat_owner UNIQUE (owner_id);
+
+ALTER TABLE flats.flat
+    ADD CONSTRAINT FK_FLAT_ON_OWNER FOREIGN KEY (owner_id) REFERENCES auth.users (id);
 
 CREATE TABLE auth.user_roles
 (
@@ -108,3 +114,20 @@ CREATE TABLE flats.flat_join
 
 ALTER TABLE flats.flat_join
     ADD CONSTRAINT FK_FLAT FOREIGN KEY (linked_flat) REFERENCES flats.flat (id);
+
+
+-- Create the tables for accounts and transactions
+CREATE TABLE financial.accounts
+(
+    id               UUID         NOT NULL,
+    flat_id          UUID         NOT NULL,
+    akahu_id         VARCHAR(255),
+    name             VARCHAR(255) NOT NULL,
+    current_balance  DECIMAL      NOT NULL,
+    institution_name VARCHAR(255) NOT NULL,
+    account_logo     VARCHAR(255),
+    CONSTRAINT pk_accounts PRIMARY KEY (id)
+);
+
+ALTER TABLE financial.accounts
+    ADD CONSTRAINT FK_ACCOUNTS_ON_FLAT FOREIGN KEY (flat_id) REFERENCES flats.flat (id);

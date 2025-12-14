@@ -1,6 +1,5 @@
 package nz.co.flatfundr.api.service;
 
-import nz.co.flatfundr.api.entity.Flat;
 import nz.co.flatfundr.api.entity.UserAccount;
 import nz.co.flatfundr.api.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +30,16 @@ public class OidcUserInfoService {
                 .email(ua.getEmail())
                 .build()
                 .getClaims();
-        Map<String, Object> test = new HashMap<>(oidcUserInfo);
-        test.put("first_time_setup", ua.isFirstTimeSetup());
-//        Flat flat = ua.getLinkedFlat().orElse(new Flat());
+        Map<String, Object> userInfo = new HashMap<>(oidcUserInfo);
+        userInfo.put("first_time_setup", ua.isFirstTimeSetup());
         if (ua.getLinkedFlat() != null) {
-            test.put("linked_flat", ua.getLinkedFlat().getId().toString());
+            userInfo.put("linked_flat", ua.getLinkedFlat().getId().toString());
         }
-//        test.put("linked_flat", ua.getLinkedFlat().getId().toString());
-        return test;
+        if (ua.getOwnedFlat() == null) {
+            userInfo.put("flat_owner", false);
+        } else {
+            userInfo.put("flat_owner", true);
+        }
+        return userInfo;
     }
 }

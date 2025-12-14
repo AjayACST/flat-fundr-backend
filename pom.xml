@@ -101,6 +101,7 @@
                         <schema>auth</schema>
                         <schema>flats</schema>
                         <schema>flyway</schema>
+                        <schema>financial</schema>
                     </schemas>
                     <defaultSchema>flyway</defaultSchema>
                     <user>flatfundr</user>
