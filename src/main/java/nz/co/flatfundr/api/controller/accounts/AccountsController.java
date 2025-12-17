@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,14 +36,20 @@ public class AccountsController {
 
 
     @GetMapping("/link/new")
-    public ResponseEntity<?> accountsForLinking(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<?> accountsForLinking() {
         List<AkahuAccount> akahuAccounts;
         try {
             akahuAccounts = akahuService.getAllAccounts();
         } catch (AkahuResponseError _) {
             return ResponseEntity.internalServerError().body("Something went wrong while fetching accounts from Akahu.");
         }
+        List<AkahuAccount> returnAccounts = new ArrayList<>();
+        for (AkahuAccount account : akahuAccounts) {
+            if (!accountRepository.existsAccountByAkahuId(account.getId())) {
+                returnAccounts.add(account);
+            }
+        }
 
-        return ResponseEntity.ok(akahuAccounts);
+        return ResponseEntity.ok(returnAccounts);
     }
 }

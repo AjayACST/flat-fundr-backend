@@ -40,6 +40,7 @@ public class OidcUserInfoService {
         } else {
             userInfo.put("flat_owner", true);
         }
+        userInfo.put("flat_name", ua.getLinkedFlat().getFlatName());
         return userInfo;
     }
 }

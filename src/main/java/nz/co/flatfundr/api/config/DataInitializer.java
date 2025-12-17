@@ -21,6 +21,10 @@ public class DataInitializer {
                 UserAccount admin = new UserAccount("ajay@quirky.codes", passwordEncoder.encode("adminpass"), Set.of("ROLE_ADMIN"), "Ajay", "Quirk", null);
                 userRepo.save(admin);
             }
+            if (userRepo.findByEmail("testinguser").isEmpty()) {
+                UserAccount user = new UserAccount("testinguser", passwordEncoder.encode("userpass"), Set.of("ROLE_ADMIN"), "User", "Testing", null);
+                userRepo.save(user);
+            }
         };
     }
 }
